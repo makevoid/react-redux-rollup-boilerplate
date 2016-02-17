@@ -1,6 +1,12 @@
-import { createStore } from 'Redux'
+import { createStore } from 'redux'
+import * as React from 'react'
+import { render } from 'react-dom';
+
 
 const c = console
+const d = document
+
+// store & controller (redux)
 
 let init = false
 
@@ -26,4 +32,11 @@ store.subscribe(() =>
 )
 
 store.dispatch({ type: 'INCR' })
-store.dispatch({ type: 'INCR' })
+
+
+// views (react)
+
+render(
+  <h1>Hallo Welt</h1>,
+  d.querySelector('container')
+)
