@@ -1,6 +1,6 @@
-import { createStore } from 'redux'
-import * as React from 'react'
-import { render } from 'react-dom';
+import { createStore } from 'Redux'
+import React from 'React';
+import { render } from 'ReactDOM';
 
 
 const c = console
@@ -38,5 +38,5 @@ store.dispatch({ type: 'INCR' })
 
 render(
   <h1>Hallo Welt</h1>,
-  d.querySelector('container')
+  d.querySelector('.container')
 )
