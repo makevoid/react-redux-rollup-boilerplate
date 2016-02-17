@@ -1,6 +1,7 @@
 import { createStore } from 'Redux'
 import React from 'React'
 import { render } from 'ReactDOM'
+import { Provider } from 'ReactRedux'
 
 
 const c = console
@@ -28,10 +29,6 @@ const counter = (state = 0, action) => {
 const store = createStore(counter)
 window.store = store
 
-store.subscribe(() =>
-  console.log(store.getState())
-)
-
 
 
 // views (react)
@@ -52,13 +49,38 @@ const CounterButton = React.createClass({
   }
 })
 
+const Counter = React.createClass({
+  contextTypes: {
+    store: React.PropTypes.object
+  },
+
+  render() {
+    return (
+      <div>
+        Counter:
+        <h4>{this.context.store.getState()}</h4>
+      </div>
+    )
+  }
+})
+
+const mainRender = () => {
+  render(
+    <div>
+      <h1>Hello Rollup+React+Redux!</h1>
+      <Provider store={store}>
+        <Counter />
+      </Provider>
+      <CounterButton />
+    </div>,
+    d.querySelector('.container')
+  )
+}
 
 // main render
 
-render(
-  <div>
-    <h1>Hello Rollup+React+Redux!</h1>
-    <CounterButton />
-  </div>,
-  d.querySelector('.container')
+mainRender()
+
+store.subscribe(() =>
+  mainRender()
 )
