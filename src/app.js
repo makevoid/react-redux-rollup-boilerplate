@@ -12,12 +12,14 @@ const d = document
 
 let init = false
 
-const counter = (state = 0, action) => {
+const invoices = (state = [], action) => {
+  // console.log("invoice:", action.invoice)
   switch (action.type) {
-    case "INCR":
-      return state + 1
-    case "INCR":
-      return state - 1
+    case "INVOICE_CREATE":
+      state.push(action.invoice)
+      return state
+    case "INVOICE_UPDATE":
+      return state
     default:
       if (init)
         console.log(`action: ${action.type} - no state change`)
@@ -26,7 +28,7 @@ const counter = (state = 0, action) => {
   }
 }
 
-const store = createStore(counter)
+const store = createStore(invoices)
 window.store = store
 
 
@@ -36,29 +38,55 @@ window.store = store
 
 // components
 
-const CounterButton = React.createClass({
+const InvoiceAddButton = React.createClass({
   handleClick(event) {
-    store.dispatch({ type: 'INCR' })
+    let inv = { amount: 1000, dateCreated: "2016-01-01" }
+    store.dispatch({ type: 'INVOICE_CREATE', invoice: inv })
   },
   render() {
     return (
       <button onClick={this.handleClick}>
-        Incr
+        Append invoice
       </button>
     )
   }
 })
 
-const Counter = React.createClass({
+
+const Invoice = React.createClass({
+  render() {
+    return (
+      <div>
+        <h5>Invoice</h5>
+        <p>Amount: {this.props.amount}</p>
+        <p>Date created: {this.props.dateCreated}</p>
+      </div>
+    )
+  }
+
+})
+
+
+const InvoiceList = React.createClass({
   contextTypes: {
     store: React.PropTypes.object
   },
 
+  invoiceList(invoices) {
+    let rows = []
+    invoices.forEach((inv, _) => {
+      rows.push(<Invoice amount={inv.amount} dateCreated={inv.dateCreated} />)
+    })
+    return rows;
+  },
+
   render() {
+    let invoices = this.context.store.getState()
+    console.log(invoices)
     return (
-      <div>
-        Counter:
-        <h4>{this.context.store.getState()}</h4>
+      <div id="antani">
+        Inoice count: {invoices.length}
+        <div>{this.invoiceList(invoices)}</div>
       </div>
     )
   }
@@ -69,9 +97,9 @@ const mainRender = () => {
     <div>
       <h1>Hello Rollup+React+Redux!</h1>
       <Provider store={store}>
-        <Counter />
+        <InvoiceList />
       </Provider>
-      <CounterButton />
+      <InvoiceAddButton />
     </div>,
     d.querySelector('.container')
   )
